@@ -1,3 +1,5 @@
 workspace.code-workspace
 *.exe
 *.pdb
+*/target/
+*Cargo.lock
