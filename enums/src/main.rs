@@ -83,6 +83,10 @@ fn main()
     let quit = Message::Quit;
     quit.call();
 
+    if let Message::Move { x, y } = mov {
+        println!("Message moved x: {} and y: {}", x, y);
+    }
+
     // Option enum
     let five = Some(5);
     let six = plus_one(five);
@@ -93,10 +97,18 @@ fn main()
 
     // if let syntax
     let coin = Coin::Quarter(UsState::Alabama);
-    let mut count = 0;
+    let another_coin = Coin::Quarter(UsState::Alaska);
+    value_in_cents(another_coin);
+    let penny = Coin::Penny;
+    value_in_cents(penny);
+    let nickel = Coin::Nickel;
+    value_in_cents(nickel);
+    let dime = Coin::Dime;
+    value_in_cents(dime);
+    let mut _count = 0;
     if let Coin::Quarter(state) = coin {
         println!("State quarter from {:?}!", state);
     } else {
-        count += 1
+        _count += 1
     }
 }
