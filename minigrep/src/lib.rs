@@ -11,24 +11,35 @@ pub struct Config
 
 impl Config
 {
-    pub fn new(args: &[String]) -> Result<Config, &str>
+    pub fn new<T>(mut args: T) -> Result<Config, &'static str>
+        where T: Iterator<Item = String>
     {
-        if args.len() < 3 {
-            return Err("Not enough arguments");
-        }
+        args.next();
 
-        let query = args[1].clone();
-        let filename = args[2].clone();
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Did not get a query string"),
+        };
+
+        let filename = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Did not get a file name"),
+        };
+
         let mut case_sensitive = env::var("CASE_INSENSITIVE").is_err();
 
-        if args.len() > 3 {
-            if args[3] == "--case_sensitive" {
-                case_sensitive = true;
+        case_sensitive = match args.next() {
+            Some(arg) => {
+                if arg == "--case_sensitive" {
+                    true
+                } else if arg == "--case_insensitive" {
+                    false
+                } else {
+                    case_sensitive
+                }
             }
-            if args[3] == "--case_insensitive" {
-                case_sensitive = false;
-            }
-        }
+            None => case_sensitive,
+        };
 
         Ok(Config { query,
                     filename,
@@ -91,14 +102,14 @@ mod tests
         let args = vec![String::from("minigrep"),
                         String::from("query"),
                         String::from("poem.txt")];
-        assert!(Config::new(&args).is_ok());
+        assert!(Config::new(args.into_iter()).is_ok());
     }
 
     #[test]
     fn test_create_config_not_enough_arguments()
     {
         let args = vec![String::from("minigrep")];
-        assert!(Config::new(&args).is_err());
+        assert!(Config::new(args.into_iter()).is_err());
     }
 
     #[test]
@@ -107,10 +118,9 @@ mod tests
         let args = vec![String::from("minigrep"),
                         String::from("query"),
                         String::from("poem.txt")];
-        let config = Config::new(&args).unwrap_or_else(|err| {
-                                           panic!("Failed to prepare config for testing run: {}",
-                                                  err);
-                                       });
+        let config = Config::new(args.into_iter()).unwrap_or_else(|err| {
+                         panic!("Failed to prepare config for testing run: {}", err);
+                     });
 
         assert!(run(config).is_ok());
     }
@@ -121,10 +131,9 @@ mod tests
         let args = vec![String::from("minigrep"),
                         String::from("query"),
                         String::from("invalid")];
-        let config = Config::new(&args).unwrap_or_else(|err| {
-                                           panic!("Failed to prepare config for testing run: {}",
-                                                  err);
-                                       });
+        let config = Config::new(args.into_iter()).unwrap_or_else(|err| {
+                         panic!("Failed to prepare config for testing run: {}", err);
+                     });
 
         assert!(run(config).is_err());
     }
