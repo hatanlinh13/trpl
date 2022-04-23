@@ -2,17 +2,16 @@ use std::env;
 use std::error::Error;
 use std::fs;
 
-pub struct Config
-{
+pub struct Config {
     pub query: String,
     pub filename: String,
     pub case_sensitive: bool,
 }
 
-impl Config
-{
+impl Config {
     pub fn new<T>(mut args: T) -> Result<Config, &'static str>
-        where T: Iterator<Item = String>
+    where
+        T: Iterator<Item = String>,
     {
         args.next();
 
@@ -41,14 +40,15 @@ impl Config
             None => case_sensitive,
         };
 
-        Ok(Config { query,
-                    filename,
-                    case_sensitive })
+        Ok(Config {
+            query,
+            filename,
+            case_sensitive,
+        })
     }
 }
 
-pub fn run(config: Config) -> Result<(), Box<dyn Error>>
-{
+pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.filename)?;
 
     let result = if config.case_sensitive {
@@ -64,8 +64,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>>
     Ok(())
 }
 
-pub fn search_case_sensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str>
-{
+pub fn search_case_sensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     let mut result = Vec::new();
 
     for line in contents.lines() {
@@ -77,8 +76,7 @@ pub fn search_case_sensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str>
     result
 }
 
-pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str>
-{
+pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     let query = query.to_lowercase();
     let mut result = Vec::new();
 
@@ -92,55 +90,55 @@ pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a st
 }
 
 #[cfg(test)]
-mod tests
-{
+mod tests {
     use super::*;
 
     #[test]
-    fn test_create_config_success()
-    {
-        let args = vec![String::from("minigrep"),
-                        String::from("query"),
-                        String::from("poem.txt")];
+    fn test_create_config_success() {
+        let args = vec![
+            String::from("minigrep"),
+            String::from("query"),
+            String::from("poem.txt"),
+        ];
         assert!(Config::new(args.into_iter()).is_ok());
     }
 
     #[test]
-    fn test_create_config_not_enough_arguments()
-    {
+    fn test_create_config_not_enough_arguments() {
         let args = vec![String::from("minigrep")];
         assert!(Config::new(args.into_iter()).is_err());
     }
 
     #[test]
-    fn test_run_success()
-    {
-        let args = vec![String::from("minigrep"),
-                        String::from("query"),
-                        String::from("poem.txt")];
+    fn test_run_success() {
+        let args = vec![
+            String::from("minigrep"),
+            String::from("query"),
+            String::from("poem.txt"),
+        ];
         let config = Config::new(args.into_iter()).unwrap_or_else(|err| {
-                         panic!("Failed to prepare config for testing run: {}", err);
-                     });
+            panic!("Failed to prepare config for testing run: {}", err);
+        });
 
         assert!(run(config).is_ok());
     }
 
     #[test]
-    fn test_run_invalid_file_name()
-    {
-        let args = vec![String::from("minigrep"),
-                        String::from("query"),
-                        String::from("invalid")];
+    fn test_run_invalid_file_name() {
+        let args = vec![
+            String::from("minigrep"),
+            String::from("query"),
+            String::from("invalid"),
+        ];
         let config = Config::new(args.into_iter()).unwrap_or_else(|err| {
-                         panic!("Failed to prepare config for testing run: {}", err);
-                     });
+            panic!("Failed to prepare config for testing run: {}", err);
+        });
 
         assert!(run(config).is_err());
     }
 
     #[test]
-    fn test_search_case_sensitive()
-    {
+    fn test_search_case_sensitive() {
         let query = "duct";
         let contents = "\
 Rust:
@@ -148,13 +146,14 @@ safe, fast, productive.
 Pick three.
 Duct tape.";
 
-        assert_eq!(vec!["safe, fast, productive."],
-                   search_case_sensitive(query, contents));
+        assert_eq!(
+            vec!["safe, fast, productive."],
+            search_case_sensitive(query, contents)
+        );
     }
 
     #[test]
-    fn test_search_case_insensitive()
-    {
+    fn test_search_case_insensitive() {
         let query = "rUsT";
         let contents = "\
 Rust:
@@ -162,7 +161,9 @@ safe, fast, productive.
 Pick three.
 Trust me!";
 
-        assert_eq!(vec!["Rust:", "Trust me!"],
-                   search_case_insensitive(query, contents));
+        assert_eq!(
+            vec!["Rust:", "Trust me!"],
+            search_case_insensitive(query, contents)
+        );
     }
 }

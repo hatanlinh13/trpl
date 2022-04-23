@@ -1,5 +1,4 @@
-fn main()
-{
+fn main() {
     // loop
     let mut count = 0;
     let result = 'counting_up: loop {

@@ -1,5 +1,4 @@
-enum List
-{
+enum List {
     Cons(i32, Box<List>),
     Nil,
 }
@@ -7,44 +6,35 @@ enum List
 struct MyBox<T>(T);
 
 use std::ops::Deref;
-impl<T> Deref for MyBox<T>
-{
+impl<T> Deref for MyBox<T> {
     type Target = T;
 
-    fn deref(&self) -> &Self::Target
-    {
+    fn deref(&self) -> &Self::Target {
         &self.0
     }
 }
 
-impl<T> MyBox<T>
-{
-    fn new(x: T) -> MyBox<T>
-    {
+impl<T> MyBox<T> {
+    fn new(x: T) -> MyBox<T> {
         MyBox(x)
     }
 }
 
-fn hello(name: &str)
-{
+fn hello(name: &str) {
     println!("Hello, {}!", name);
 }
 
-struct CustomSmartPointer
-{
+struct CustomSmartPointer {
     data: String,
 }
 
-impl Drop for CustomSmartPointer
-{
-    fn drop(&mut self)
-    {
+impl Drop for CustomSmartPointer {
+    fn drop(&mut self) {
         println!("Dropping CustomSmartPointer with data \"{}\"", self.data);
     }
 }
 
-enum RcList
-{
+enum RcList {
     RcCons(i32, Rc<RcList>),
     RcNil,
 }
@@ -53,8 +43,7 @@ use crate::List::{Cons, Nil};
 use crate::RcList::{RcCons, RcNil};
 use std::rc::Rc;
 
-fn main()
-{
+fn main() {
     let b = Box::new(5);
     println!("b = {}", b);
 
@@ -68,8 +57,12 @@ fn main()
     let m = MyBox::new(String::from("Rust"));
     hello(&m);
 
-    let _c = CustomSmartPointer { data: String::from("my stuff") };
-    let _d = CustomSmartPointer { data: String::from("other stuff") };
+    let _c = CustomSmartPointer {
+        data: String::from("my stuff"),
+    };
+    let _d = CustomSmartPointer {
+        data: String::from("other stuff"),
+    };
     println!("CustomSmartPointers created.");
     drop(_c);
     println!("CustomSmartPointer c dropped before the end of main.");
@@ -82,6 +75,8 @@ fn main()
         let _rcc = RcCons(4, Rc::clone(&_rca));
         println!("count after creating rcc = {}", Rc::strong_count(&_rca));
     }
-    println!("count after rcc goes out of scope = {}",
-             Rc::strong_count(&_rca));
+    println!(
+        "count after rcc goes out of scope = {}",
+        Rc::strong_count(&_rca)
+    );
 }

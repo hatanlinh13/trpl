@@ -1,7 +1,6 @@
 mod exercises;
 
-fn main()
-{
+fn main() {
     use std::collections::HashMap;
 
     let field_name = String::from("Favorite color");
@@ -23,8 +22,10 @@ fn main()
     println!("Median of array is: {}", exercises::median(&arr));
     println!("Mode of array is: {}", exercises::mode(&arr));
 
-    println!("the lazy fox jumps over\nPig latin: {}",
-             exercises::pig_latin("the lazy fox jumps over"));
+    println!(
+        "the lazy fox jumps over\nPig latin: {}",
+        exercises::pig_latin("the lazy fox jumps over")
+    );
 
     let mut company: HashMap<String, Vec<String>> = HashMap::new();
     exercises::add_employee("Linh", "Developer", &mut company);

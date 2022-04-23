@@ -6,7 +6,8 @@ use generics::Tweet;
 use std::fmt::Display;
 
 fn largest<T>(list: &[T]) -> T
-    where T: PartialOrd + Copy
+where
+    T: PartialOrd + Copy,
 {
     let mut largest = list[0];
     for &item in list {
@@ -18,7 +19,8 @@ fn largest<T>(list: &[T]) -> T
 }
 
 fn largest_with_ref<'a, T>(list: &'a [T]) -> &'a T
-    where T: PartialOrd
+where
+    T: PartialOrd,
 {
     let mut largest = &list[0];
     for item in list {
@@ -29,66 +31,67 @@ fn largest_with_ref<'a, T>(list: &'a [T]) -> &'a T
     largest
 }
 
-struct Point<T>
-{
+struct Point<T> {
     x: T,
     y: T,
 }
 
-impl<T> Point<T>
-{
-    fn x(&self) -> &T
-    {
+impl<T> Point<T> {
+    fn x(&self) -> &T {
         &self.x
     }
 }
 
-impl Point<f32>
-{
-    fn distance_from_origin(&self) -> f32
-    {
+impl Point<f32> {
+    fn distance_from_origin(&self) -> f32 {
         (self.x.powi(2) + self.y.powi(2)).sqrt()
     }
 }
 
 struct MixPoint<T, U>
-    where T: Clone,
-          U: Clone
+where
+    T: Clone,
+    U: Clone,
 {
     x: T,
     y: U,
 }
 
 impl<T, U> MixPoint<T, U>
-    where T: Clone,
-          U: Clone
+where
+    T: Clone,
+    U: Clone,
 {
     fn mixup<V, W>(&self, other_point: MixPoint<V, W>) -> MixPoint<T, W>
-        where T: Clone,
-              U: Clone,
-              V: Clone,
-              W: Clone
+    where
+        T: Clone,
+        U: Clone,
+        V: Clone,
+        W: Clone,
     {
-        MixPoint { x: self.x.clone(),
-                   y: other_point.y.clone() }
+        MixPoint {
+            x: self.x.clone(),
+            y: other_point.y.clone(),
+        }
     }
 }
 
-fn return_summarizable() -> impl Summary
-{
-    Tweet { username: String::from("Someone"),
-            content: String::from("Blah blah"),
-            reply: false,
-            retweet: false }
+fn return_summarizable() -> impl Summary {
+    Tweet {
+        username: String::from("Someone"),
+        content: String::from("Blah blah"),
+        reply: false,
+        retweet: false,
+    }
 }
 
-struct ImportantExcerpt<'a>
-{
+struct ImportantExcerpt<'a> {
     part: &'a str,
 }
 
 fn longest_with_an_announcement<'a, T>(x: &'a str, y: &'a str, ann: T) -> &'a str
-    where T: Display
+where
+    T: Display,
 {
     println!("Announcement! {}", ann);
     if x.len() > y.len() {
@@ -98,8 +101,7 @@ fn longest_with_an_announcement<'a, T>(x: &'a str, y: &'a str, ann: T) -> &'a st
     }
 }
 
-fn main()
-{
+fn main() {
     let number_list = vec![34, 50, 22, 71, 100, 22];
     let result = largest(&number_list);
     println!("The largest number is: {}", result);
@@ -116,10 +118,12 @@ fn main()
     let _float_point = Point { x: 2.0, y: 4.0 };
     let _integer_and_float = MixPoint { x: 5, y: 4.0 };
 
-    let tweet = Tweet { username: String::from("someone"),
-                        content: String::from("of course, as you already know, people"),
-                        reply: false,
-                        retweet: false };
+    let tweet = Tweet {
+        username: String::from("someone"),
+        content: String::from("of course, as you already know, people"),
+        reply: false,
+        retweet: false,
+    };
 
     println!("one new tweet: {}", tweet.summarize());
 
@@ -131,5 +135,7 @@ fn main()
 
     let novel = String::from("Call me someone. Some years ago...");
     let first_sentence = novel.split(".").next().expect("Could not find a '.'");
-    let _i = ImportantExcerpt { part: first_sentence };
+    let _i = ImportantExcerpt {
+        part: first_sentence,
+    };
 }

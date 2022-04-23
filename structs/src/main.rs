@@ -1,28 +1,31 @@
 #[derive(Debug)]
-struct User
-{
+struct User {
     activate: bool,
     name: String,
     email: String,
     sign_in_count: u64,
 }
 
-fn build_user(email: String, name: String) -> User
-{
-    User { email,
-           name,
-           activate: true,
-           sign_in_count: 1 }
+fn build_user(email: String, name: String) -> User {
+    User {
+        email,
+        name,
+        activate: true,
+        sign_in_count: 1,
+    }
 }
 
-fn main()
-{
+fn main() {
     let user1 = build_user(String::from("user1@domain"), String::from("user"));
-    println!("rect1 - activate: {} - name: {} - email: {} - sign in count: {}",
-             user1.activate, user1.name, user1.email, user1.sign_in_count);
+    println!(
+        "rect1 - activate: {} - name: {} - email: {} - sign in count: {}",
+        user1.activate, user1.name, user1.email, user1.sign_in_count
+    );
 
-    let user2 = User { email: String::from("user2@domain"),
-                       ..user1 };
+    let user2 = User {
+        email: String::from("user2@domain"),
+        ..user1
+    };
     dbg!(&user2);
 
     // tuple structs

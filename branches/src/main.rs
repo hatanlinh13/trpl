@@ -1,5 +1,4 @@
-fn main()
-{
+fn main() {
     let number = 3;
 
     if number < 5 {

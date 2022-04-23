@@ -1,5 +1,4 @@
-fn main()
-{
+fn main() {
     println!("Hello, world!");
 
     another_function(15);
@@ -12,22 +11,18 @@ fn main()
     println!("The value of z is: {}", z);
 }
 
-fn another_function(x: u32)
-{
+fn another_function(x: u32) {
     println!("The value of x is: {}", x);
 }
 
-fn print_labeled_measurement(value: u32, unit_label: char)
-{
+fn print_labeled_measurement(value: u32, unit_label: char) {
     println!("The measurement is: {}{}", value, unit_label);
 }
 
-fn five() -> u32
-{
+fn five() -> u32 {
     5
 }
 
-fn plus_one(x: u32) -> u32
-{
+fn plus_one(x: u32) -> u32 {
     x + 1
 }

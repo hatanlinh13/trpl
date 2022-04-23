@@ -1,26 +1,26 @@
-pub trait Messenger
-{
+pub trait Messenger {
     fn send(&self, msg: &str);
 }
 
-pub struct LimitTracker<'a, T: Messenger>
-{
+pub struct LimitTracker<'a, T: Messenger> {
     messenger: &'a T,
     value: usize,
     max: usize,
 }
 
-impl<'a, T> LimitTracker<'a, T> where T: Messenger
+impl<'a, T> LimitTracker<'a, T>
+where
+    T: Messenger,
 {
-    pub fn new(messenger: &T, max: usize) -> LimitTracker<T>
-    {
-        LimitTracker { messenger,
-                       value: 0,
-                       max }
+    pub fn new(messenger: &T, max: usize) -> LimitTracker<T> {
+        LimitTracker {
+            messenger,
+            value: 0,
+            max,
+        }
     }
 
-    pub fn set_value(&mut self, value: usize)
-    {
+    pub fn set_value(&mut self, value: usize) {
         self.value = value;
 
         let percentage_of_max = self.value as f64 / self.max as f64;
@@ -38,35 +38,30 @@ impl<'a, T> LimitTracker<'a, T> where T: Messenger
 }
 
 #[cfg(test)]
-mod tests
-{
+mod tests {
     use super::*;
     use std::cell::RefCell;
 
-    struct MockMessenger
-    {
+    struct MockMessenger {
         sent_messages: RefCell<Vec<String>>,
     }
 
-    impl MockMessenger
-    {
-        fn new() -> MockMessenger
-        {
-            MockMessenger { sent_messages: RefCell::new(vec![]) }
+    impl MockMessenger {
+        fn new() -> MockMessenger {
+            MockMessenger {
+                sent_messages: RefCell::new(vec![]),
+            }
         }
     }
 
-    impl Messenger for MockMessenger
-    {
-        fn send(&self, message: &str)
-        {
+    impl Messenger for MockMessenger {
+        fn send(&self, message: &str) {
             self.sent_messages.borrow_mut().push(String::from(message));
         }
     }
 
     #[test]
-    fn it_sends_an_over_75_percent_warning_message()
-    {
+    fn it_sends_an_over_75_percent_warning_message() {
         let mock_messenger = MockMessenger::new();
         let mut limit_tracker = LimitTracker::new(&mock_messenger, 100);
 

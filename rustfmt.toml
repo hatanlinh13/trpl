@@ -1,4 +1,0 @@
-brace_style = "AlwaysNextLine"
-control_brace_style = "AlwaysSameLine"
-empty_item_single_line = false
-indent_style = "Visual"
